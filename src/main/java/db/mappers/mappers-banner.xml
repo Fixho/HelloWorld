@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+	<entry key="selectProductList">
+		SELECT *
+  		FROM(
+    		   SELECT 
+					 PRODUCT_ID,
+					 PRODUCT_NAME,
+					 PRODUCT_IMG,
+					 R.REGION_NAME AS REGION_NAME ,
+					 C.CATEGORY_NAME as CATEGORY_NAME,
+					 START_DATE,
+					 END_DATE,STATUS,STAY,A_PRICE,
+					 C_PRICE,AMOUNT,
+					 FLIGHT,INFO_EDITOR,
+					 SCHEDULE_EDITOR,
+					 DETAIL_EDITOR,
+					 REGISTRATION_DATE,
+					 MODIFICATION_DATE,
+					 ROW_NUMBER() OVER(ORDER BY PRODUCT_ID) as RNUM
+		  FROM PRODUCT P
+		  JOIN PRO_CATEGORY C ON C.CATEGORY_ID=P.CATEGORY_ID
+		  JOIN REGION R ON R.REGION_ID=P.REGION_ID)
+		 WHERE RNUM BETWEEN ? AND ? 
+	</entry>
+	<entry key="selectBannerList">
+		SELECT *
+		  FROM BANNER
+	</entry>
+	
+	
+	<entry key = "selectProductLists">
+		SELECT *
+		  FROM PRODUCT
+		 WHERE PRODUCT_ID = ?
+	</entry>
+	
+	<entry key="addMainBannerProduct">
+		INSERT 
+		  INTO BANNER
+		  	   (BANNER_NO,
+		  	   IMG,
+		  	   STATUS,
+		  	   FK_PRO_NO,
+		  	   TITLE,
+		  	   PRICE
+		  	   )
+		VALUES (
+				SEQ_BANNER.NEXTVAL,
+				?,
+				'M',
+				?,
+				?,
+				?
+				) 
+	</entry>
+	
+	<entry key="addSub1BannerProduct">
+			INSERT 
+				  INTO BANNER
+				  	   (
+				  	   BANNER_NO,
+				  	   IMG,
+				  	   STATUS,
+				  	   FK_PRO_NO,
+				  	   TITLE,
+				  	   PRICE
+				  	   )
+				VALUES (
+						SEQ_BANNER.NEXTVAL,
+						?,
+						'H',
+						?,
+						?,
+						?
+						) 
+	</entry>
+	
+	<entry key="addSub2BannerMainProduct">
+			INSERT 
+				  INTO BANNER
+				  	   (BANNER_NO,
+				  	   IMG,
+				  	   STATUS,
+				  	   FK_PRO_NO,
+				  	   TITLE,
+				  	   PRICE
+				  	   )
+				VALUES (
+						SEQ_BANNER.NEXTVAL,
+						?,
+						'D',
+						?,
+						?,
+						?
+						) 
+	</entry>
+	
+	
+	<entry key="deleteBanner">
+		DELETE
+		  FROM BANNER
+		 WHERE BANNER_NO = ? 
+	</entry>
+	
+	
+	
+	
+
+</properties>

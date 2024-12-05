@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<entry key="selectCategoryList">
+		SELECT *
+		  FROM PRO_CATEGORY
+	ORDER BY CATEGORY_ID 
+	</entry>
+	
+	
+	<entry key="selectRegionList">
+		SELECT *
+		  FROM REGION
+	</entry>
+	
+	<entry key="addCategory">
+		INSERT INTO PRO_CATEGORY VALUES (SEQ_CATEGORY.NEXTVAL,?,?)
+	</entry>
+	
+	<entry key="modifyCategory">
+		UPDATE PRO_CATEGORY
+   		 SET CATEGORY_NAME = ?,
+   	       CATEGORY_ENG_NAME = ?
+     WHERE CATEGORY_ID = ?
+	
+	</entry>
+	
+	<entry key="addRegion">
+		INSERT INTO REGION VALUES (SEQ_REGION.NEXTVAL,?,?)
+	</entry>
+
+	<entry key="deleteCategoryList">
+		DELETE  
+  		FROM PRO_CATEGORY
+ 	   WHERE CATEGORY_ENG_NAME = ?
+
+	</entry>
+	<entry key="deleteRegionList">
+		DELETE  
+  		FROM REGION
+ 	   WHERE REGION_ENG_NAME = ?
+
+	</entry>
+	
+	<entry key="subModifyList">
+		UPDATE REGION
+   		 SET REGION_NAME = ?,
+   	       REGION_ENG_NAME = ?
+     WHERE REGION_ID = ?
+	
+	</entry>
+	
+	<entry key="subCategoryDelete">
+		DELETE  
+  		FROM REGION
+ 	   WHERE REGION_ID = ?
+
+	</entry>
+
+
+</properties>

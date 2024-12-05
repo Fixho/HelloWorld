@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+<entry key="longincheck">
+  SELECT 
+  			 USER_PWD 
+    FROM 
+    		 "USER"
+   WHERE 
+   			 USER_ID = ?
+   	AND  USER_PWD= ?
+
+	</entry>
+	
+	<entry key ="updateUser" >
+	UPDATE 
+         "USER"
+   SET 
+          USER_NAME = ?
+         ,EMAIL = ?
+         ,PHONE = ? 
+         ,MODIFY_DATE = SYSDATE
+   WHERE
+   
+          USER_ID = ?
+	</entry>
+	
+	<entry key="SelectUserById" >
+	SELECT 
+     	    USER_NO
+      	   ,USER_ID
+           ,USER_PWD
+           ,USER_NAME
+           ,EMAIL
+           ,PHONE
+           ,ENROLL_DATE
+           ,MODIFY_DATE
+           ,ROLL
+           ,STATUS   
+     FROM
+           "USER"
+    WHERE 
+            USER_ID = ?
+	</entry>
+	
+	<entry key="deleteUser">
+	UPDATE 
+       	    "USER"
+       SET 
+            STATUS ='R'
+           ,MODIFY_DATE = SYSDATE
+     WHERE 
+           USER_ID  = ?
+	</entry>
+
+	<entry key="updateUserPwd">
+	
+		UPDATE 
+						"USER"
+   		 SET 	
+   		 			USER_PWD = ?
+           ,MODIFY_DATE = SYSDATE
+     WHERE 	
+     				USER_ID = ?
+        AND USER_PWD = ?
+	</entry>
+
+	<entry key="selectMyinfoCount">
+	SELECT 
+       	 COUNT(*) as COUNT
+ 	 FROM 
+       	"ORDER" O
+	 JOIN 
+        PAYMENT USING(IMP_UID)
+   JOIN 
+        PRODUCT USING(PRODUCT_ID)
+  WHERE 
+        USER_NO = ?
+	</entry>
+	<entry key="selectMyinfoList">
+	SELECT *
+  FROM (
+   SELECT           
+       PRODUCT_ID,
+       PRODUCT_NAME,
+       PRODUCT_IMG,
+       START_DATE,
+       END_DATE,
+       MERCHANT_UID,
+       PAY_DATE,
+       ROW_NUMBER() OVER(ORDER BY O.MERCHANT_UID DESC) AS RNUM
+  FROM 
+       "ORDER" O
+  JOIN 
+       PAYMENT USING(IMP_UID)
+  JOIN 
+       PRODUCT USING(PRODUCT_ID)
+ WHERE 
+       USER_NO = ?)
+ WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	<entry key="myinfoPaymentdetails">
+	SELECT 
+    			USER_NAME,
+    			P.PRODUCT_ID AS PRODUCT_ID,
+   			  P.PRODUCT_NAME AS PRODUCT_NAME,
+   			  P.START_DATE AS START_DATE,
+    			P.END_DATE AS END_DATE,
+    			Y.STATUS AS STATUS,
+    			B.BH_CLASS AS BH_CLASS,
+   			 	B.PRICE AS PRICE,
+    			P.A_PRICE AS A_PRICE,
+    			O.CHILD AS CHILD,
+    			O.POINT_U AS POINT_U,
+    			O.FINAL_PAY AS FINAL_PAY,
+    			O.FLIGHT AS FLIGHT,
+    			CONCAT(PERSON.SURNAME, PERSON.ENG_NAME) AS NAME,
+    			PERSON.BIRTHDAY AS BIRTHDAY,
+    			PERSON.PASSPORT AS PASSPORT,
+    			Y.PAY_OP AS PAY_OP,
+    			Y.TOTAL_PAY AS TOTAL_PAY
+		FROM 
+    			"ORDER" O
+		JOIN 
+    			"USER" U ON O.USER_NO = U.USER_NO
+		JOIN 
+   				PRODUCT P ON O.PRODUCT_ID = P.PRODUCT_ID
+		JOIN 
+    			BOHUM B ON O.BH_NO = B.BH_NO
+		JOIN 
+    			PAYMENT Y ON Y.IMP_UID = O.IMP_UID
+		JOIN 
+    			PERSON ON O.MERCHANT_UID = PERSON.MERCHANT_UID 
+	 WHERE 
+    	    U.USER_NO = ?
+ AND P.PRODUCT_ID = ?
+ AND PERSON.STATUS = 'A'
+	</entry>
+	<entry key="myinfoJJIMListList">
+	
+SELECT *
+  FROM (
+SELECT           
+       	F.PRODUCT_ID AS PRODUCT_ID ,  
+       	P.PRODUCT_NAME AS PRODUCT_NAME,  
+       	P.PRODUCT_IMG AS PRODUCT_IMG,  
+       	P.START_DATE AS START_DATE,  
+       	P.END_DATE AS END_DATE,  
+       	O.MERCHANT_UID AS MERCHANT_UID,  
+       	PM.PAY_DATE AS PAY_DATE, 
+       	F.ADDED_DATE AS ADDED_DATE,  
+       	U.USER_NAME AS USER_NAME, 
+  
+       	ROW_NUMBER() OVER(ORDER BY F.ADDED_DATE DESC) AS RNUM  
+   FROM 
+       	FAVORITES F 
+   JOIN 
+       	PRODUCT P ON F.PRODUCT_ID = P.PRODUCT_ID 
+   LEFT JOIN 
+       	"ORDER" O ON F.USER_NO = O.USER_NO AND F.PRODUCT_ID = O.PRODUCT_ID 
+   LEFT JOIN 
+       	PAYMENT PM ON O.IMP_UID = PM.IMP_UID  
+   JOIN 
+       	"USER" U ON F.USER_NO = U.USER_NO 
+   WHERE 
+       	F.USER_NO = ?  
+  )
+WHERE RNUM BETWEEN ? AND ?
+</entry>
+
+<entry key="selectMyinfoJJIMCount">
+ SELECT 
+    		COUNT(DISTINCT PRODUCT_ID) AS FAVORITE_COUNT  
+	 FROM 
+   		  FAVORITES 
+	WHERE 
+    		USER_NO = ? 
+</entry>
+<entry key="deleteJjimOut">
+	DELETE FROM FAVORITES
+	 WHERE USER_NO = ?
+		 AND PRODUCT_ID = ?
+
+	
+</entry>
+<entry key="allDeleteJjimOut">
+	DELETE FROM FAVORITES
+	 WHERE USER_NO = ?
+</entry>
+ 
+ <entry key="selectPoint">
+ 	SELECT 
+    SUM(CASE WHEN STATUS = 'P' THEN POINT ELSE 0 END) AS POINT_P,
+    SUM(CASE WHEN STATUS = 'U' THEN POINT ELSE 0 END) AS POINT_U
+		 FROM POINT
+	 WHERE USER_NO = ?
+ 
+ </entry>
+ 
+ 
+</properties>
